@@ -20,7 +20,7 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public UUID getServerUserId() {
-        String id = utilRepository.findById(Utility.Key.SERVER_USER_ID.name()).orElseThrow(() -> {
+        String id = utilRepository.findById(Utility.Key.SERVER_ACCOUNT_ID.name()).orElseThrow(() -> {
             log.warn("No server user ID in utilities");
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }).getUtilValue();

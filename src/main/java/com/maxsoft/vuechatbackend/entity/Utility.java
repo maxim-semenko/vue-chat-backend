@@ -25,7 +25,7 @@ public class Utility {
     private String utilValue;
 
     public enum Key {
-        SERVER_USER_ID,
-        SERVER_USER_SECRET_KEY,
+        SERVER_ACCOUNT_ID,
+        SERVER_ACCOUNT_PRIVATE_KEY,
     }
 }

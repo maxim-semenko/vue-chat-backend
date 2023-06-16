@@ -24,18 +24,19 @@ public class InitService {
 
     private final UtilRepository utilRepository;
     private final AccountRepository accountRepository;
-    private final PublicKeyRepository publicKeyRepository;
 
     @Value("${app.init-props.key-rsa-size}")
     private int keySize;
 
-    private String serverUsername;
+    @Value("${app.init-props.server_account_username}")
+    private String serverAccountUsername;
 
-    private String serverName;
+    @Value("${app.init-props.server_account_name}")
+    private String serverAccountName;
 
     @Transactional
     public void recreateServerUser() throws NoSuchAlgorithmException {
-        utilRepository.findById(Utility.Key.SERVER_USER_ID.name())
+        utilRepository.findById(Utility.Key.SERVER_ACCOUNT_ID.name())
                 .ifPresent(s -> accountRepository.deleteById(UUID.fromString(s.getUtilValue())));
 
         UUID id = UUID.randomUUID();
@@ -47,13 +48,11 @@ public class InitService {
         String publicKeyPem = RsaKeyConverterUtil.publicKeyToPem(keyPair.getPublic());
         String privateKeyPem = RsaKeyConverterUtil.privateKeyToPem(keyPair.getPrivate());
 
-
         PublicKey publicKey = new PublicKey();
-
         Account serverAccount = Account.builder()
                 .id(id)
-                .name("VueChat Administration")
-                .username("administrator")
+                .username(serverAccountUsername)
+                .name(serverAccountName)
                 .publicKeyList(List.of(publicKey))
                 .build();
 
@@ -63,8 +62,8 @@ public class InitService {
 
         accountRepository.save(serverAccount);
 
-        utilRepository.save(new Utility(Utility.Key.SERVER_USER_ID.name(), id.toString()));
-        utilRepository.save(new Utility(Utility.Key.SERVER_USER_SECRET_KEY.name(), privateKeyPem));
+        utilRepository.save(new Utility(Utility.Key.SERVER_ACCOUNT_ID.name(), id.toString()));
+        utilRepository.save(new Utility(Utility.Key.SERVER_ACCOUNT_PRIVATE_KEY.name(), privateKeyPem));
     }
 
 }
