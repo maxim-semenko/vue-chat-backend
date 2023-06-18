@@ -35,8 +35,10 @@ public class Account {
     @Column(nullable = false)
     private String name;
 
+    private String password;
+
     @JsonIgnore
-    @ToString.Exclude
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<PublicKey> publicKeyList;
+    @Column(nullable = false, updatable = false, length = 512)
+    private String  publicKey;
+
 }
