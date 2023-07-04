@@ -5,17 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.Cascade;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,23 +20,22 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Account {
+public class File {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false)
-    private String username;
+    @NotEmpty
+    private String name;
 
-    private String firstname;
+    @NotEmpty
+    private String type;
 
-    private String lastname;
+    private String data;
 
-    private String password;
+    @NotNull
+    private UUID targetId;
 
-    @JsonIgnore
-    @Column(nullable = false, updatable = false, length = 512)
-    private String  publicKey;
-
+    private String number;
 }
