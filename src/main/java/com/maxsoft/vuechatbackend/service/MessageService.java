@@ -1,4 +1,9 @@
 package com.maxsoft.vuechatbackend.service;
 
-public interface MessageService {
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class MessageService {
 }

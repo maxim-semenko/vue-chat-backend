@@ -1,4 +1,4 @@
 package com.maxsoft.vuechatbackend.service;
 
-public interface AccountService {
+public class AccountService {
 }
