@@ -28,8 +28,11 @@ public class InitService {
     @Value("${app.init-props.server_account_username}")
     private String serverAccountUsername;
 
-    @Value("${app.init-props.server_account_name}")
-    private String serverAccountName;
+    @Value("${app.init-props.server_account_firstname}")
+    private String serverAccountFirstname;
+
+    @Value("${app.init-props.server_account_lastname}")
+    private String serverAccountLastname;
 
     @Transactional
     public void recreateServerUser() throws NoSuchAlgorithmException {
@@ -48,7 +51,8 @@ public class InitService {
         Account serverAccount = Account.builder()
                 .id(id)
                 .username(serverAccountUsername)
-                .name(serverAccountName)
+                .firstname(serverAccountFirstname)
+                .lastname(serverAccountLastname)
                 .publicKey(publicKeyPem)
                 .build();
 
