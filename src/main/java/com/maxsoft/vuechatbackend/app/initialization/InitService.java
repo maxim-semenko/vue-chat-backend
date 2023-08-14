@@ -39,8 +39,6 @@ public class InitService {
         utilRepository.findById(Utility.Key.SERVER_ACCOUNT_ID.name())
                 .ifPresent(s -> accountRepository.deleteById(UUID.fromString(s.getUtilValue())));
 
-        UUID id = UUID.randomUUID();
-
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(keySize);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -49,15 +47,14 @@ public class InitService {
         String privateKeyPem = RsaKeyConverterUtil.privateKeyToPem(keyPair.getPrivate());
 
         Account serverAccount = Account.builder()
-                .id(id)
                 .username(serverAccountUsername)
                 .firstname(serverAccountFirstname)
                 .lastname(serverAccountLastname)
                 .publicKey(publicKeyPem)
                 .build();
 
-        accountRepository.save(serverAccount);
-        utilRepository.save(new Utility(Utility.Key.SERVER_ACCOUNT_ID.name(), id.toString()));
+        serverAccount = accountRepository.save(serverAccount);
+        utilRepository.save(new Utility(Utility.Key.SERVER_ACCOUNT_ID.name(), serverAccount.getId().toString()));
         utilRepository.save(new Utility(Utility.Key.SERVER_ACCOUNT_PRIVATE_KEY.name(), privateKeyPem));
     }
 
