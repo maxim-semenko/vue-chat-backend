@@ -6,4 +6,5 @@ public enum MessageType {
     KEY,
     INVITE,
     LEAVE,
+    SERVER,
 }

@@ -1,6 +1,8 @@
 package com.maxsoft.vuechatbackend.service;
 
+import com.maxsoft.vuechatbackend.entity.Account;
 import com.maxsoft.vuechatbackend.entity.Utility;
+import com.maxsoft.vuechatbackend.repository.AccountRepository;
 import com.maxsoft.vuechatbackend.repository.UtilRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +18,23 @@ import java.util.UUID;
 public class UtilService {
 
     private final UtilRepository utilRepository;
+    private final AccountRepository accountRepository;
 
-    public UUID getServerUserId() {
+    public String getPublicKey() {
+        UUID serverAccountId = getServerUserId();
+        Account serverAccount = accountRepository
+                .findById(serverAccountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        return serverAccount.getPublicKey();
+    }
+
+    private UUID getServerUserId() {
         String id = utilRepository.findById(Utility.Key.SERVER_ACCOUNT_ID.name()).orElseThrow(() -> {
             log.warn("No server user ID in utilities");
             return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }).getUtilValue();
         return UUID.fromString(id);
     }
+
 }

@@ -1,11 +1,13 @@
-package com.maxsoft.vuechatbackend.dto;
+package com.maxsoft.vuechatbackend.controller.dto;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Getter
+@ToString
 public class AuthRequestDto {
 
     @NotEmpty
@@ -21,4 +23,8 @@ public class AuthRequestDto {
 
     @Size(min = 2, max = 20)
     private String lastname;
+
+    private KeyRsaDto keyRsa;
+
+    private KeyAesDto keyAes;
 }

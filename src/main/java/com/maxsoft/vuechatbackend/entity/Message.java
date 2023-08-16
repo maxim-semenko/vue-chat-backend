@@ -6,12 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
@@ -36,17 +36,21 @@ public class Message {
     @NotNull
     private UUID chatId;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @NotNull
     private MessageType type;
 
-    @Column(length = 2048)
-    private String content;
+    @Lob
+    private byte[] content;
+
+    @Lob
+    private byte[] signature;
+
+    @Lob
+    @NotNull
+    private byte[] digest;
 
     private Boolean isHasAttachments;
-
-    @Column(length = 361)
-    private String nonce;
 
     private Date createdAt;
 
