@@ -65,7 +65,7 @@ public class CryptHelperUtil {
 
             return sign.verify(signature);
         } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
