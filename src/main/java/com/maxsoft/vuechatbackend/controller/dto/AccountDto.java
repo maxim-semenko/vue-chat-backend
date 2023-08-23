@@ -19,6 +19,8 @@ public class AccountDto {
 
     private String lastname;
 
-    private byte[] encodedPrivateKey;
+    private EncryptedKeyDto encodedPrivateKey;
+
+    private String publicKey;
 
 }

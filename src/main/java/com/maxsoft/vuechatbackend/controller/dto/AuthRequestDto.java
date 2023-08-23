@@ -24,7 +24,9 @@ public class AuthRequestDto {
     @Size(min = 2, max = 20)
     private String lastname;
 
-    private KeyRsaDto keyRsa;
+    private String publicKey;
 
-    private KeyAesDto keyAes;
+    private EncryptedKeyDto keyRsa;
+
+    private EncryptedKeyDto keyAes;
 }
