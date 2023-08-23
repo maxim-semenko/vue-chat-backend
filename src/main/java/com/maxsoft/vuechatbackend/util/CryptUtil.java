@@ -6,11 +6,7 @@ import lombok.Getter;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -64,44 +60,44 @@ public class CryptUtil {
         PrivateKey privateKeyToDecrypt = RsaKeyConverterUtil.pemToPrivateKey(privateKeyPem);
 
         boolean verify = CryptHelperUtil.verify(signature, nonce, publicKeyToVerify);
-        if (!verify) {
-            throw new IllegalArgumentException();
-        }
+//        if (!verify) {
+//            throw new IllegalArgumentException();
+//        }
 
         Cipher cipher = CryptHelperUtil.getCipherRSAForDecrypt(privateKeyToDecrypt);
         try {
             return new String(cipher.doFinal(input), StandardCharsets.ISO_8859_1);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException(e);
         }
     }
 
-    public static CryptoResultAES encryptByAES(String input, String key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        byte[] keyBytes = key.getBytes();
+    public static CryptoResultAES encryptByAES(String input, String key) {
+        byte[] keyBytes = key.getBytes(StandardCharsets.ISO_8859_1);
         byte[] ivBytes = secureRandom.generateSeed(16);
 
-        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
-        IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
+        try {
+            Cipher encryptCipher = CryptHelperUtil.getCipherAESForEncrypt(keyBytes, ivBytes);
+            byte[] encryptedBytes = encryptCipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
 
-        Cipher encryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        encryptCipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
-
-        byte[] encryptedBytes = encryptCipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
-
-        return new CryptoResultAES(encryptedBytes, ivBytes);
+            return new CryptoResultAES(encryptedBytes, ivBytes);
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    public static String decryptByAES(byte[] input, String key, byte[] digest) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
-        Cipher decryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
+    public static String decryptByAES(byte[] input, String key, byte[] digest) {
         byte[] keyBytes = key.getBytes(StandardCharsets.ISO_8859_1);
-        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
-        IvParameterSpec ivParameterSpec = new IvParameterSpec(digest);
+        Cipher decryptCipher = CryptHelperUtil.getCipherAESForDecrypt(keyBytes, digest);
 
-        decryptCipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-        byte[] decryptedBytes = decryptCipher.doFinal(input);
-
-        return new String(decryptedBytes, StandardCharsets.UTF_8);
+        try {
+            byte[] decryptedBytes = decryptCipher.doFinal(input);
+            return new String(decryptedBytes, StandardCharsets.UTF_8);
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

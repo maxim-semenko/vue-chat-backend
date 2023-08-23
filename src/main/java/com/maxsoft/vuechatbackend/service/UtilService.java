@@ -29,6 +29,15 @@ public class UtilService {
         return serverAccount.getPublicKey();
     }
 
+    public String getServerPrivateKey() {
+        return utilRepository
+                .findById(Utility.Key.SERVER_ACCOUNT_PRIVATE_KEY.name())
+                .orElseThrow(() -> {
+                    log.warn("No server user ID in utilities");
+                    return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+                }).getUtilValue();
+    }
+
     private UUID getServerUserId() {
         String id = utilRepository.findById(Utility.Key.SERVER_ACCOUNT_ID.name()).orElseThrow(() -> {
             log.warn("No server user ID in utilities");
